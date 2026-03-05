@@ -1,0 +1,33 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: notification-service
+  config:
+    activate:
+      on-profile: default
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/ast
+    username: postgres
+    password: postgres
+    hikari:
+      maximum-pool-size: 2
+      minimum-idle: 1
+
+mybatis:
+  mapper-locations: classpath:/mapper/**/*.xml
+  type-aliases-package: com.api.ast
+  configuration:
+    map-underscore-to-camel-case: true
+    jdbc-type-for-null: NULL
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
