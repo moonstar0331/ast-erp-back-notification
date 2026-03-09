@@ -3,14 +3,14 @@
 <mapper namespace="com.api.ast.notificationservice.mapper.NotificationMapper">
 
     <insert id="insertNotification" parameterType="com.api.ast.notificationservice.dto.NotificationDto" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO notifications (user_id, type, title, content, link_url, is_read, created_at)
-        VALUES (#{userId}, #{type}, #{title}, #{content}, #{linkUrl}, #{isRead}, NOW())
+        INSERT INTO notifications (user_uuid, type, title, content, link_url, is_read, created_at)
+        VALUES (#{userUuid}, #{type}, #{title}, #{content}, #{linkUrl}, #{isRead}, NOW())
     </insert>
 
-    <select id="selectNotificationsByUserId" resultType="com.api.ast.notificationservice.dto.NotificationDto">
-        SELECT id, user_id, type, title, content, link_url, is_read, created_at
+    <select id="selectNotificationsByUserUuid" resultType="com.api.ast.notificationservice.dto.NotificationDto">
+        SELECT id, user_uuid, type, title, content, link_url, is_read, created_at
         FROM notifications
-        WHERE user_id = #{userId}
+        WHERE user_uuid = #{userUuid}
         ORDER BY created_at DESC
     </select>
 

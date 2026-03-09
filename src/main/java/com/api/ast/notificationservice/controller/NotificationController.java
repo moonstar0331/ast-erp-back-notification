@@ -21,9 +21,9 @@ public class NotificationController {
     // 현재 사용자의 알림 목록 조회
     @GetMapping
     public List<NotificationDto> getNotifications(@AuthenticationPrincipal Jwt jwt) {
-        // TODO: Jwt sub claim이나 custom claim(userId)에서 userId 추출
-        Long userId = Long.valueOf(jwt.getSubject()); 
-        return notificationService.getNotifications(userId);
+        // user_uuid는 JWT의 sub 필드나 커스텀 클레임에서 추출
+        String userUuid = jwt.getSubject(); 
+        return notificationService.getNotifications(userUuid);
     }
 
     // 타 서비스에서 알림 생성 요청 (POST /api/notifications/send)
@@ -37,8 +37,8 @@ public class NotificationController {
     @PostMapping("/broadcast")
     public ResponseEntity<Void> broadcastNotification(
             @RequestBody NotificationEvent event,
-            @RequestParam(required = false) Long excludeUserId) {
-        notificationService.createBroadcastNotification(event, excludeUserId);
+            @RequestParam(required = false) String excludeUserUuid) {
+        notificationService.createBroadcastNotification(event, excludeUserUuid);
         return ResponseEntity.ok().build();
     }
 

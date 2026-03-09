@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class NotificationEvent {
-    private Long userId;
+    private String userUuid;
 
     private String type;
 

@@ -24,11 +24,11 @@ public class RedisSubscriber implements MessageListener {
             NotificationMessage msg =
                     objectMapper.readValue(body, NotificationMessage.class);
             
-            log.info("Redis message received for user: {}", msg.getUserId());
+            log.info("Redis message received for user UUID: {}", msg.getUserUuid());
             
-            // STOMP /user/{userId}/queue/notification 으로 전송
+            // STOMP /user/{userUuid}/queue/notification 으로 전송
             messagingTemplate.convertAndSendToUser(
-                    msg.getUserId().toString(),
+                    msg.getUserUuid(),
                     "/queue/notification",
                     msg
             );

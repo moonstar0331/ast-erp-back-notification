@@ -6,8 +6,8 @@ import com.api.ast.notificationservice.dto.NotificationEvent;
 import java.util.List;
 
 public interface NotificationService {
-    List<NotificationDto> getNotifications(Long userId);
+    List<NotificationDto> getNotifications(String userUuid);
     void createNotification(NotificationEvent event);
-    void createBroadcastNotification(NotificationEvent event, Long excludeUserId);
+    void createBroadcastNotification(NotificationEvent event, String excludeUserUuid);
     void markAsRead(Long notificationId);
 }

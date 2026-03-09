@@ -25,15 +25,15 @@ public class NotificationServiceImpl implements NotificationService {
     private final AuthServiceClient authServiceClient;
 
     @Override
-    public List<NotificationDto> getNotifications(Long userId) {
-        return mapper.selectNotificationsByUserId(userId);
+    public List<NotificationDto> getNotifications(String userUuid) {
+        return mapper.selectNotificationsByUserUuid(userUuid);
     }
 
     @Override
     @Transactional
     public void createNotification(NotificationEvent event) {
         NotificationDto notification = NotificationDto.builder()
-                .userId(event.getUserId())
+                .userUuid(event.getUserUuid())
                 .type(event.getType())
                 .title(event.getTitle())
                 .content(event.getContent())
@@ -48,7 +48,7 @@ public class NotificationServiceImpl implements NotificationService {
         // 2. WebSocket을 통해 클라이언트에 푸시
         NotificationMessage message = new NotificationMessage();
         message.setNotificationId(notification.getId());
-        message.setUserId(notification.getUserId());
+        message.setUserUuid(notification.getUserUuid());
         message.setType(notification.getType());
         message.setTitle(notification.getTitle());
         message.setContent(notification.getContent());
@@ -59,16 +59,16 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public void createBroadcastNotification(NotificationEvent event, Long excludeUserId) {
+    public void createBroadcastNotification(NotificationEvent event, String excludeUserUuid) {
         List<UserResponse> users = authServiceClient.getUsers();
         
         for (UserResponse user : users) {
-            if (excludeUserId != null && excludeUserId.equals(user.getUserId())) {
+            if (excludeUserUuid != null && excludeUserUuid.equals(user.getUserUuid())) {
                 continue;
             }
             
             NotificationEvent individualEvent = new NotificationEvent();
-            individualEvent.setUserId(user.getUserId());
+            individualEvent.setUserUuid(user.getUserUuid());
             individualEvent.setType(event.getType());
             individualEvent.setTitle(event.getTitle());
             individualEvent.setContent(event.getContent());
