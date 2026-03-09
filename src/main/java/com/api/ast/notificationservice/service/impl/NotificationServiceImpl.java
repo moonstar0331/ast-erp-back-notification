@@ -2,6 +2,7 @@ package com.api.ast.notificationservice.service.impl;
 
 import com.api.ast.notificationservice.dto.NotificationDto;
 import com.api.ast.notificationservice.dto.NotificationEvent;
+import com.api.ast.notificationservice.dto.NotificationMessage;
 import com.api.ast.notificationservice.mapper.NotificationMapper;
 import com.api.ast.notificationservice.service.NotificationPushService;
 import com.api.ast.notificationservice.service.NotificationService;
@@ -42,7 +43,15 @@ public class NotificationServiceImpl implements NotificationService {
         log.info("Notification saved: {}", notification.getId());
 
         // 2. WebSocket을 통해 클라이언트에 푸시
-        pushService.push(event);
+        NotificationMessage message = new NotificationMessage();
+        message.setNotificationId(notification.getId());
+        message.setUserId(notification.getUserId());
+        message.setType(notification.getType());
+        message.setTitle(notification.getTitle());
+        message.setContent(notification.getContent());
+        message.setLinkUrl(notification.getLinkUrl());
+
+        pushService.push(message);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.api.ast.notificationservice.service;
 
-import com.api.ast.notificationservice.dto.NotificationEvent;
+import com.api.ast.notificationservice.dto.NotificationMessage;
 
 public interface NotificationPushService {
 
-    public void push(NotificationEvent event);
+    void push(NotificationMessage message);
 }
