@@ -33,6 +33,15 @@ public class NotificationController {
         return ResponseEntity.ok().build();
     }
 
+    // 타 서비스에서 전체 알림 생성 요청 (POST /api/notifications/broadcast)
+    @PostMapping("/broadcast")
+    public ResponseEntity<Void> broadcastNotification(
+            @RequestBody NotificationEvent event,
+            @RequestParam(required = false) Long excludeUserId) {
+        notificationService.createBroadcastNotification(event, excludeUserId);
+        return ResponseEntity.ok().build();
+    }
+
     // 알림 읽음 처리
     @PatchMapping("/{id}/read")
     public ResponseEntity<Void> markAsRead(@PathVariable Long id) {

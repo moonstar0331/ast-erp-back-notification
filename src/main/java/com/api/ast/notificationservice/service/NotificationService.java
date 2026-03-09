@@ -8,5 +8,6 @@ import java.util.List;
 public interface NotificationService {
     List<NotificationDto> getNotifications(Long userId);
     void createNotification(NotificationEvent event);
+    void createBroadcastNotification(NotificationEvent event, Long excludeUserId);
     void markAsRead(Long notificationId);
 }

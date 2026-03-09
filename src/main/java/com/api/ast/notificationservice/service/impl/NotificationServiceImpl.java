@@ -4,8 +4,10 @@ import com.api.ast.notificationservice.dto.NotificationDto;
 import com.api.ast.notificationservice.dto.NotificationEvent;
 import com.api.ast.notificationservice.dto.NotificationMessage;
 import com.api.ast.notificationservice.mapper.NotificationMapper;
+import com.api.ast.notificationservice.openfeign.AuthServiceClient;
 import com.api.ast.notificationservice.service.NotificationPushService;
 import com.api.ast.notificationservice.service.NotificationService;
+import com.api.ast.notificationservice.vo.UserResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationMapper mapper;
     private final NotificationPushService pushService;
+    private final AuthServiceClient authServiceClient;
 
     @Override
     public List<NotificationDto> getNotifications(Long userId) {
@@ -52,6 +55,27 @@ public class NotificationServiceImpl implements NotificationService {
         message.setLinkUrl(notification.getLinkUrl());
 
         pushService.push(message);
+    }
+
+    @Override
+    @Transactional
+    public void createBroadcastNotification(NotificationEvent event, Long excludeUserId) {
+        List<UserResponse> users = authServiceClient.getUsers();
+        
+        for (UserResponse user : users) {
+            if (excludeUserId != null && excludeUserId.equals(user.getUserId())) {
+                continue;
+            }
+            
+            NotificationEvent individualEvent = new NotificationEvent();
+            individualEvent.setUserId(user.getUserId());
+            individualEvent.setType(event.getType());
+            individualEvent.setTitle(event.getTitle());
+            individualEvent.setContent(event.getContent());
+            individualEvent.setLinkUrl(event.getLinkUrl());
+            
+            this.createNotification(individualEvent);
+        }
     }
 
     @Override
